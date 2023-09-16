@@ -66,6 +66,7 @@ public class Ejercicio1Application {
 					.formaPago(Factura.FormaPago.efectivo)
 					.numero(01)
 					.build();
+			factura1 = facturarepository.save(factura1);
 			Producto producto1 = Producto.builder()
 					.tiempoEstimadoCocina(15)
 					.denominacion("carne")
@@ -76,12 +77,33 @@ public class Ejercicio1Application {
 					.stockMinimo(5)
 					.unidadMedida("g")
 					.build();
-			DetallePedido detallePedido1 = DetallePedido.builder()
-					.cantidad(1)
-					.producto(producto1)
-					.subtotal(500.0)
-					.build();
 
+
+
+			// Supongamos que tienes una ID válida de DetallePedido
+			Long detallePedidoId = 1L; // Reemplaza con la ID correcta
+
+			// Cargar la entidad DetallePedido desde la base de datos
+			DetallePedido detallePedidoExistente = detallePedidorepository.findById(detallePedidoId).orElse(null);
+
+			// Verificar si se encontró la entidad existente
+			if (detallePedidoExistente != null) {
+				// Actualizar los campos de la entidad existente si es necesario
+				detallePedidoExistente.setCantidad(2);
+				detallePedidoExistente.setSubtotal(1000.0);
+
+				// Guardar la entidad actualizada
+				detallePedidorepository.save(detallePedidoExistente);
+			} else {
+				// Si no se encontró la entidad, crear una nueva instancia
+				DetallePedido detallePedidoNuevo = DetallePedido.builder()
+						.cantidad(2)
+						.subtotal(1000.0)
+						.build();
+
+				// Guardar la nueva instancia en la base de datos
+
+			}
 			Pedido pedido1 = Pedido.builder()
 					.estado(Pedido.Estado.entregado)
 					.fecha("08/08/2023")
@@ -90,23 +112,24 @@ public class Ejercicio1Application {
 					.factura(factura1)
 					.build();
 			cliente1.agregarPedido(pedido1);
-			pedido1.agregarDetallePedido(detallePedido1);
+
+
 
 
 			Rubro rubro1 = Rubro.builder()
-					.denominacion("carne")
+						.denominacion("carne")
 					.build();
 			rubro1.agregarProducto(producto1);
 
 				// Guardar en los repositorios
 				clienterepository.save(cliente1);
-				pedidorepository.save(pedido1); // Llamar al método save en una instancia válida de Pedidorepository
+				 // Llamar al método save en una instancia válida de Pedidorepository
 				rubrorepository.save(rubro1);
-				detallePedidorepository.save(detallePedido1);
-				domiciliorepository.save(domicilio1);
-			domiciliorepository.save(domicilio2);
+
+
+
 			facturarepository.save(factura1);
-			productorepository.save(producto1);
+
 
 		};
 	}
